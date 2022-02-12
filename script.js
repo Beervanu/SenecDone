@@ -1,6 +1,6 @@
-//toggles
-//lists
-//
+//order steps
+//list of words
+//incorrect word in sentence
 
 function inputText(input, text)
 {
@@ -46,6 +46,36 @@ function multipleChoice(node, continueButton)
 	
 }
 
+function toggle(node, continueButton)
+{
+	let options = eventHandler(node).children[1].props.children
+	let toggleNodes = Array.from(node.querySelectorAll('.Toggles__single__toggle'))
+	for(let i = 0; i<options.length; i++)
+	{
+		if (options[i].props.answers.correctAnswer !== options[i].props.currentPosition)
+		{
+			toggleNodes[i].click()
+		}		
+	}
+}
+
+function cont(node, continueButton)
+{
+	continueButton.click()
+}
+
+function list(node, continueButton)
+{
+	let wordNodes = Array.from(node.querySelectorAll('.BlurredWord__word--blurred'))
+	let inputNode = node.querySelector('input')
+	for(let i = 0; i<wordNodes.length; i++)
+	{
+		inputText(inputNode, wordNodes[i].textContent)
+	}
+}
+
+
+
 const actionNodes = {
 	'DesktopConcept_carousel__pw-xA': {
 		func: carousel,
@@ -58,6 +88,26 @@ const actionNodes = {
 	'MultipleChoiceCardContents_contents__2YA0v': {
 		func: multipleChoice,
 		waitForReady: false
+	},
+	'Toggles__wrapper': {
+		func: toggle,
+		waitForReady: false
+	},
+	'MessageStructure__outer': {
+		func: cont,
+		waitForReady: false
+	},
+	'ImageDescription_container__2Hwrn': {
+		func: cont,
+		waitForReady: true
+	},
+	'Video__wrapper': {
+		func: cont,
+		waitForReady: false
+	},
+	'List__wrapper': {
+		func: list,
+		waitForReady: true
 	}
 }
 
