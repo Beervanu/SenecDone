@@ -20,7 +20,6 @@ function internalInstance(node)
 	return node[Object.keys(node).filter(key=>key.startsWith('__reactInternalInstance'))[0]]
 }
 
-
 function carousel(node, continueButton)
 {
 	continueButton.click()
@@ -28,8 +27,11 @@ function carousel(node, continueButton)
 
 function missingWord(node, continueButton)
 {
-	let correct = internalInstance(node).child.memoizedProps.value
-	inputText(node.querySelector('.Input_input__3CI_c'), correct)
+	let props = internalInstance(node).child.memoizedProps
+	if(props.children)
+	{
+		inputText(node.querySelector('.Input_input__3CI_c'), props.value)
+	}
 }
 
 function multipleChoice(node, continueButton)
@@ -74,7 +76,71 @@ function list(node, continueButton)
 	}
 }
 
+function exactList(node, continueButton)
+{
+	node = node.parentNode
+	let values = internalInstance(node).child.memoizedProps.content.values
+	let inputNode = node.querySelector('input')
+	for(let i = 0; i<values.length; i++)
+	{
+		inputText(inputNode, values[i].value[0].word)
+	}
+}
 
+function flashcard(node)
+{
+	node.querySelector('.Flashcard__cardFrontInner').click()
+	node.querySelector('button').click()
+}
+
+function flow()
+{
+	return null
+}
+
+function _flow(node, continueButton)
+{
+	node = node.parentNode
+
+
+	let content = internalInstance(node).child.memoizedProps.content,
+		finished = false,
+		lookup = {}
+	for(let i = 0; i<content.orderedValues.length; i++)
+	{
+		lookup[content.orderedValues[i]] = i	
+	}
+
+	let j = 0;
+	while(!finished)
+	{
+		let listValues = Array.from(node.querySelectorAll('.ListValue__value'))
+		let eventTarget = listValues[0].parentNode
+		//if the node is in the wrong place
+		let correctIndex = lookup[listValues[j].innerText]
+		if(correctIndex !== j)
+		{
+			let {x, y} = listValues[j].getBoundingClientRect()
+			let {x: correctX, y: correctY} = listValues[correctIndex].getBoundingClientRect()
+			eventTarget.dispatchEvent(new MouseEvent('mousedown', {
+				clientX: x,
+				clientY: y
+			}))
+			eventTarget.dispatchEvent(new MouseEvent('mousemove', {
+				clientX: correctX,
+				clientY: correctY
+			}))
+			eventTarget.dispatchEvent(new MouseEvent('mouseup'))
+			j++
+		}
+		else
+		{
+			j++
+		}
+
+		finished = j===content.values.length
+	}
+}
 
 const actionNodes = {
 	'DesktopConcept_carousel__pw-xA': {
@@ -86,16 +152,13 @@ const actionNodes = {
 		waitForReady: true
 	},
 	'MultipleChoiceCardContents_contents__2YA0v': {
-		func: multipleChoice,
-		waitForReady: false
+		func: multipleChoice
 	},
 	'Toggles__wrapper': {
-		func: toggle,
-		waitForReady: false
+		func: toggle
 	},
 	'MessageStructure__outer': {
-		func: cont,
-		waitForReady: false
+		func: cont
 	},
 	'ImageDescription_container__2Hwrn': {
 		func: cont,
@@ -103,10 +166,33 @@ const actionNodes = {
 	},
 	'Video__wrapper': {
 		func: cont,
-		waitForReady: false
+		waitForReady: true
 	},
 	'List__wrapper': {
 		func: list,
+		waitForReady: true
+	},
+	'ImageList__wrapper': {
+		func: list,
+		waitForReady: true
+	},
+	'Hierarchy__outer': {
+		func: cont,
+		waitForReady: true
+	},
+	'ExactList_wrapper__6RFC9': {
+		func: exactList,
+		waitForReady: true
+	},
+	'Flashcard__card': {
+		func: flashcard
+	},
+	'Delve': {
+		func: cont,
+		waitForReady: true
+	},
+	'Flow__wrapper': {
+		func: flow,
 		waitForReady: true
 	}
 }
@@ -114,7 +200,7 @@ const actionNodes = {
 function search(mutRecords)
 {
 	let node = mutRecords[0].addedNodes[0]
-	let continueButton = document.querySelector('.Button_button__1Q4K4')
+	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4')).at(-1)
 	for(let nodeName in actionNodes)
 	{
 		let foundNodes = Array.from(node.getElementsByClassName(nodeName))
