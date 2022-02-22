@@ -98,11 +98,6 @@ let __senecFunctions = {
 		continueButton.click()
 	},
 
-	// flow: () =>
-	// {
-	// 	return null
-	// },
-
 	flow: (node, continueButton) =>
 	{
 		node = node.parentNode
