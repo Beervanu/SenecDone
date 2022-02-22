@@ -47,6 +47,11 @@ let __senecFunctions = {
 		
 	},
 
+	imageMultipleChoice: (node) => 
+	{
+		Array.from(node.querySelectorAll('img')).find((el) => !el.currentSrc.includes('INCORRECT')).click()
+	},
+
 	toggle: (node) =>
 	{
 		let options = __senecUtilities.eventHandler(node).children[1].props.children
@@ -128,6 +133,12 @@ let __senecFunctions = {
 		}
 		continueButton.click()
 	},
+
+	colourMatch: (node) => 
+	{
+		node = node.parentNode
+		__senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).click()
+	}
 }
 
 
@@ -239,6 +250,14 @@ let __senecActionNodes = {
 	'Flow__wrapper': {
 		func: "flow",
 		waitForReady: true
+	},
+
+	'EquationColorMatchButton_container__20P5p': {
+		func: "colourMatch"
+	},
+
+	'ImageMultiChoice_images__1gRno': {
+		func: "imageMultipleChoice"
 	}
 }
 
