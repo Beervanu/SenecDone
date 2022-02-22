@@ -1,0 +1,16 @@
+#senecHelp {
+	color: green;
+	padding: 12px 6px;
+	border-radius: 4px;
+	font-size: 16px;
+	letter-spacing: .2px;
+	outline: none;
+	border: none;
+	overflow: hidden;
+	background-color: cyan;
+	align-content: center;
+	display: table;
+	width: 200px;
+	margin: 0 auto;
+	text-align: center;
+}

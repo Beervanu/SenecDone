@@ -1,17 +1,28 @@
 {
-    "name": "Senecdone",
-    "description": "Does seneca kek",
-    "version": "0.2",
+    "name": "SenecDone",
+    "description": "Does Seneca assignments at the click of a button",
+    "version": "0.3",
     "manifest_version": 3,
     "background": {
         "service_worker": "./background.js"
     },
-    "permissions": ["activeTab", "scripting"],
+    "permissions": ["scripting"],
+	"host_permissions": ["https://app.senecalearning.com/classroom/course/*/section/*/session"],
     "action": {
         "default_title": "A lil trolling"
     },
+	"externally_connectable": {
+		"matches": ["https://app.senecalearning.com/*"]
+	},
+	"content_scripts": [
+		{
+			"matches": ["https://app.senecalearning.com/*"],
+			"css": ["help_button.css"],
+			"js": ["help_button.js"]
+		}
+	],
 	"web_accessible_resources": [{
 		"resources": ["script.js"],
 		"matches": ["<all_urls>"]
-	  }]
-  }
+	}]
+}
