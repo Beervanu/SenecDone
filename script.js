@@ -28,7 +28,7 @@ let __senecFunctions = {
 	missingWord: (node) =>
 	{
 		let props = __senecUtilities.internalInstance(node).child.memoizedProps
-		if(props.children)
+		if(props.children|| props.inputRef)
 		{
 			__senecUtilities.inputText(node.querySelector('.Input_input__3CI_c'), props.value)
 		}
