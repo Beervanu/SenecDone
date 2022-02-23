@@ -49,7 +49,9 @@ let __senecFunctions = {
 
 	imageMultipleChoice: (node) => 
 	{
-		Array.from(node.querySelectorAll('img')).find((el) => !el.currentSrc.includes('INCORRECT')).click()
+		
+		let key = __senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).key
+		Array.from(node.querySelectorAll('img')).find((el) => __senecUtilities.eventHandler(el).src === key).click()
 	},
 
 	toggle: (node) =>
@@ -218,6 +220,10 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 	'Question_question__25RlY': {
+		func: "cont",
+		waitForReady: true
+	},
+	'Pattern__wrapper': {
 		func: "cont",
 		waitForReady: true
 	},
