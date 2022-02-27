@@ -1,5 +1,5 @@
 (() => {
-
+let ended = false
 let __senecUtilities = {
 	inputText: (input, text) =>
 	{
@@ -31,6 +31,18 @@ let __senecFunctions = {
 		if(props.children|| props.inputRef)
 		{
 			__senecUtilities.inputText(node.querySelector('.Input_input__3CI_c'), props.value)
+		}
+	},
+
+	wrongWord: (node) => {
+		let sentence = __senecUtilities.internalInstance(node).memoizedProps.children.props.sentence
+
+		for(let i = 0; i<sentence.length; i++)
+		{
+			if(sentence[i].shouldBeSelected)
+			{
+				node.childNodes[i].click()
+			}
 		}
 	},
 
@@ -115,7 +127,7 @@ let __senecFunctions = {
 		for(let i = 0; i<orderedValues.length; i++)
 		{
 			let listValues = Array.from(node.querySelectorAll('.ListValue__value'))
-			let nodeAtI = listValues.find(node => node.innerText === orderedValues[i])
+			let nodeAtI = listValues.find(node => node.innerText === orderedValues[i].trim())
 
 			let {left, top} = nodeAtI.getBoundingClientRect()
 			let {left: correctLeft, top: correctTop} = listValues[i].getBoundingClientRect()
@@ -159,7 +171,14 @@ let __senecActionNodes = {
 	'PretestWrapper__outer': {
 		func: "multiStep"
 	},
+	'WrongWord': {
+		func: "multiStep"
+	},
 	
+	'WrongWord__selectableSentenceWrapper': {
+		func: 'wrongWord'
+	},
+
 	'DesktopConcept_carousel__pw-xA': {
 		func: "carousel",
 		waitForReady: true
@@ -181,6 +200,9 @@ let __senecActionNodes = {
 		func: "multipleChoice"
 	},
 	'MultiSelectCardContents_contents__cNf9H': {
+		func: "multipleChoice"
+	},
+	'MultipleChoiceQuestion_answerAndImageContainer__1v5KG': {
 		func: "multipleChoice"
 	},
 
@@ -272,7 +294,25 @@ function search(multiStep, mutRecords)
 	let node = mutRecords[0].addedNodes[0]
 	if (!node) return
 	node = multiStep ? node.parentNode : node
+	if (!node) return
+	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
+	if(scrollUp) scrollUp.click()
+
+	
 	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4')).at(-1)
+	if (continueButton && continueButton.innerText === 'Next')
+	{
+		let obv = new MutationObserver((mutRecords, mutObserver) => {
+			if(!continueButton.getAttribute('disabled'))
+			{
+				continueButton.click()
+				mutObserver.disconnect()
+			}
+		})
+		obv.observe(continueButton, {attributeFilter: ['disabled']})
+		
+		return
+	}
 	for(let nodeName in __senecActionNodes)
 	{
 		let foundNodes = Array.from(node.getElementsByClassName(nodeName))
@@ -311,13 +351,14 @@ let endObserver = new MutationObserver((mutRecords, mutObserver) => {
 	if (node.nodeType !== Node.ELEMENT_NODE) return
 
 	let end = node.querySelector('.ekaTJK')
-	if(end)
+	if(end && !ended)
 	{
+		ended = true
 		end.click()
-		Array.from(document.querySelectorAll('a')).find(node => node.innerText === 'Start new session').click()
-		mutObserver.disconnect()
-		searchObserver.disconnect()
-		postMessage({action: "__senecDone"})
+		end = Array.from(document.querySelectorAll('a')).find(node => node.innerText === 'Start new session')
+		if(end) end.click()
+		postMessage("__senecDone")
+		return
 	}
 })
 endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})

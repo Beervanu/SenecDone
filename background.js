@@ -10,7 +10,6 @@ function insertScript(scriptName)
 
 function onMessage(message, sender, sendResponse)
 {
-	console.log(message, sender)
 	if (message.action === "runSenecDone")
 	{
 		chrome.scripting.executeScript({
@@ -18,7 +17,6 @@ function onMessage(message, sender, sendResponse)
 			func: insertScript,
 			args: ['script.js']
 		})
-		sendResponse()
 	}
 }
 

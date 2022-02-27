@@ -1,15 +1,16 @@
 {
     "name": "SenecDone",
     "description": "Does Seneca assignments at the click of a button",
-    "version": "0.3.2",
+    "version": "0.4.0",
     "manifest_version": 3,
     "background": {
         "service_worker": "./background.js"
     },
-    "permissions": ["scripting"],
+    "permissions": ["scripting", "storage"],
 	"host_permissions": ["https://app.senecalearning.com/classroom/course/*/section/*/session"],
     "action": {
-        "default_title": "A lil trolling"
+        "default_title": "A lil trolling",
+		"default_popup": "./popup/index.html"
     },
 	"externally_connectable": {
 		"matches": ["https://app.senecalearning.com/*"]
