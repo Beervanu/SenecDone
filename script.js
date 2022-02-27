@@ -151,7 +151,7 @@ let __senecFunctions = {
 	colourMatch: (node) => 
 	{
 		node = node.parentNode
-		__senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).click()
+		node.childNodes[__senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).key].click()
 	}
 }
 
@@ -299,7 +299,7 @@ function search(multiStep, mutRecords)
 	if(scrollUp) scrollUp.click()
 
 	
-	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4')).at(-1)
+	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
 	if (continueButton && continueButton.innerText === 'Next')
 	{
 		let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -338,11 +338,10 @@ function search(multiStep, mutRecords)
 	
 	}
 }
-
 let searchObserver = new MutationObserver(search.bind({}, false))
 searchObserver.observe(document.querySelector('.ljGimB'), {childList: true})
 
-
+// end observer waits for the end of the session, and redirects us to the new one
 let endObserver = new MutationObserver((mutRecords, mutObserver) => {
 	let node = mutRecords.find((record) => !!record.addedNodes[0])
 
@@ -357,12 +356,9 @@ let endObserver = new MutationObserver((mutRecords, mutObserver) => {
 		end.click()
 		end = Array.from(document.querySelectorAll('a')).find(node => node.innerText === 'Start new session')
 		if(end) end.click()
-		postMessage("__senecDone")
-		return
 	}
 })
 endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
 
-
-document.querySelector('.Button_button__1Q4K4').click()
+document.querySelector('#session_startNewSession').click()
 })()
