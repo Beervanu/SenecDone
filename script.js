@@ -1,3 +1,4 @@
+
 (() => {
 let ended = false
 let __senecUtilities = {
@@ -20,6 +21,10 @@ let __senecUtilities = {
 
 
 let __senecFunctions = {
+	numberInput: (node, continueButton) => {
+		__senecUtilities.inputText(node, __senecUtilities.internalInstance(node.parentNode).child.memoizedProps.inputPart.value.toJSON().value)
+		continueButton.click()
+	},
 	carousel: (node, continueButton) =>
 	{
 		continueButton.click()
@@ -120,17 +125,16 @@ let __senecFunctions = {
 	flow: (node, continueButton) =>
 	{
 		node = node.parentNode
-
-
-		let orderedValues = __senecUtilities.internalInstance(node).child.memoizedProps.content.orderedValues
+		let orderedValues = __senecUtilities.internalInstance(node).memoizedProps.children[1].props.content.orderedValues
 
 		for(let i = 0; i<orderedValues.length; i++)
 		{
+
 			let listValues = Array.from(node.querySelectorAll('.ListValue__value'))
 			let nodeAtI = listValues.find(node => node.innerText === orderedValues[i].trim())
 
 			let {left, top} = nodeAtI.getBoundingClientRect()
-			let {left: correctLeft, top: correctTop} = listValues[i].getBoundingClientRect()
+			let {top: correctTop} = listValues[i].getBoundingClientRect()
 
 			nodeAtI.dispatchEvent(new MouseEvent('mousedown', {
 				clientX: left + window.pageXOffset,
@@ -138,7 +142,7 @@ let __senecFunctions = {
 				bubbles: true
 			}))
 			nodeAtI.dispatchEvent(new MouseEvent('mousemove', {
-				clientX: correctLeft + window.pageXOffset,
+				clientX: left + window.pageXOffset,
 				clientY: correctTop + window.pageYOffset,
 				bubbles: true
 			}))
@@ -174,9 +178,13 @@ let __senecActionNodes = {
 	'WrongWord': {
 		func: "multiStep"
 	},
-	
 	'WrongWord__selectableSentenceWrapper': {
 		func: 'wrongWord'
+	},
+
+	'UserInput_NumberInput__3r7pm': {
+		func: "numberInput",
+		waitForReady: true
 	},
 
 	'DesktopConcept_carousel__pw-xA': {
@@ -289,17 +297,19 @@ let __senecActionNodes = {
 	}
 }
 
+//returns true if a node is found
+//false in all other cases
+
 function search(multiStep, mutRecords)
 {
 	let node = mutRecords[0].addedNodes[0]
-	if (!node) return
+	if (!node) return false
 	node = multiStep ? node.parentNode : node
-	if (!node) return
+	if (!node) return false
 	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
 	if(scrollUp) scrollUp.click()
 
-	
-	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
+	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4')).pop()
 	if (continueButton && continueButton.innerText === 'Next')
 	{
 		let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -311,13 +321,16 @@ function search(multiStep, mutRecords)
 		})
 		obv.observe(continueButton, {attributeFilter: ['disabled']})
 		
-		return
+		return false
 	}
+
+	let nodeIsFound = false
 	for(let nodeName in __senecActionNodes)
 	{
 		let foundNodes = Array.from(node.getElementsByClassName(nodeName))
 		for(let i = 0; i<foundNodes.length; i++)
 		{
+			nodeIsFound = true
 			if(__senecActionNodes[nodeName].waitForReady && !multiStep)
 			{
 				// only execute function when the page is ready
@@ -337,28 +350,34 @@ function search(multiStep, mutRecords)
 		}
 	
 	}
+	if(!nodeIsFound)
+	{
+		// only search until a node that we know is found
+		let emptyObv = new MutationObserver((mutRecords) => {
+			if(search(false, mutRecords))
+			{
+				emptyObv.disconnect()
+			}
+		})
+		emptyObv.observe(node, {childList: true, subtree:true})
+	}
+	return nodeIsFound
 }
 let searchObserver = new MutationObserver(search.bind({}, false))
-searchObserver.observe(document.querySelector('.ljGimB'), {childList: true})
+searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true})
 
 // end observer waits for the end of the session, and redirects us to the new one
 let endObserver = new MutationObserver((mutRecords, mutObserver) => {
-	let node = mutRecords.find((record) => !!record.addedNodes[0])
-
-	if (!node) return
-	node = node.addedNodes[0]
-	if (node.nodeType !== Node.ELEMENT_NODE) return
-
-	let end = node.querySelector('.ekaTJK')
+	let end = document.querySelector('.EndSessionModalRouter_wrapper__3hwdx')
 	if(end && !ended)
 	{
 		ended = true
-		end.click()
-		end = Array.from(document.querySelectorAll('a')).find(node => node.innerText === 'Start new session')
-		if(end) end.click()
+		end.querySelector('.jZlLyf').click()
+		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).pop().click()
 	}
 })
 endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
 
+//start learning button
 document.querySelector('#session_startNewSession').click()
 })()
