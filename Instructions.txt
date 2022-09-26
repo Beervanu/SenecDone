@@ -1,0 +1,21 @@
+How To Install
+
+Chrome
+Go to chrome://extensions/
+Turn on Developer mode (top right)
+Click Load Unpacked and open the folder in this directory called "src"
+
+Edge
+Go to edge://extensions/
+Turn on Developer mode (left sidebar)
+Click Load Unpacked and open the folder in this directory called "src"
+
+Opera
+Drag the file called SenecDone.crx into opera from the file explorer
+A popup will come up telling you it is an unverified source or similar, click Go to Extensions
+Click Install
+
+Use
+If you click the extensions icon in the top left and then SenecDone, a menu will come up with 2 options: Auto and time
+- Auto does everything automatically, you just need to be on the right page - be careful, it can start doing tasks u don't want it to do
+- time does nothing yet ignore it
