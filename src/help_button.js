@@ -1,7 +1,7 @@
 let root = document.querySelector('#root'),
 	oldURI,
-	config = {auto:false, time: 0}
-chrome.storage.sync.get(['auto', 'time'], (cfg) => config = cfg)
+	config = {auto:false}
+chrome.storage.sync.get(['auto'], (cfg) => config = cfg)
 chrome.storage.sync.onChanged.addListener((changes) => Object.assign(config, changes))
 //doesn't work yet
 function __run()
@@ -49,33 +49,3 @@ let helpObserver = new MutationObserver((mutRecords, observer) => {
 	}
 })
 helpObserver.observe(root, {childList: true, subtree: true})
-
-// let root = document.querySelector('#root'),
-// 	oldURI,
-// 	auto = false
-// chrome.storage.sync.get('auto', (d) => auto = d.auto)
-// chrome.storage.sync.onChanged.addListener((changes) => auto = changes.auto.newValue)
-
-// let helpObserver = new MutationObserver(async (mutRecords, observer) => {
-// 	// when uri has changed and we are on a start new session page
-// 	if(document.querySelector('#session_startNewSession') && oldURI !== root.baseURI)
-// 	{
-// 		oldURI = root.baseURI
-// 		if (auto)
-// 		{
-// 			chrome.runtime.sendMessage({action: "runSenecDone"})
-// 		}
-// 		else
-// 		{
-// 			let s = document.createElement('span')
-// 			s.innerHTML = ' or senecDone'
-// 			s.id = "senecHelp"
-// 			s.onclick = () => {
-// 				chrome.runtime.sendMessage({action: "runSenecDone"})
-// 				s.remove()
-// 			}
-// 			document.querySelector('.SessionControlBar_wrapper__2XLzu').after(s)
-// 		}
-// 	}
-// })
-// helpObserver.observe(root, {childList: true, subtree: true})

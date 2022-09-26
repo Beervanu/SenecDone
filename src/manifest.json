@@ -1,7 +1,7 @@
 {
     "name": "SenecDone",
-    "description": "Does Seneca assignments at the click of a button",
-    "version": "0.5",
+	"description": "Never have to do homework again, SenecDone will do seneca assignments at the click of a button", 
+    "version": "0.6",
     "manifest_version": 3,
     "background": {
         "service_worker": "./background.js"
@@ -9,7 +9,7 @@
     "permissions": ["scripting", "storage"],
 	"host_permissions": ["https://app.senecalearning.com/classroom/course/*/section/*/session"],
     "action": {
-        "default_title": "A lil trolling",
+        "default_title": "Options",
 		"default_popup": "./popup/index.html"
     },
 	"externally_connectable": {
@@ -25,5 +25,11 @@
 	"web_accessible_resources": [{
 		"resources": ["script.js"],
 		"matches": ["<all_urls>"]
-	}]
+	}],
+	"icons": {
+		"16": "Icons/16.png",
+		"32": "Icons/32.png",
+		"48": "Icons/48.png",
+		"128": "Icons/128.png"
+	}
 }

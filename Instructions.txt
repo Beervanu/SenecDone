@@ -16,6 +16,5 @@ A popup will come up telling you it is an unverified source or similar, click Go
 Click Install
 
 Use
-If you click the extensions icon in the top left and then SenecDone, a menu will come up with 2 options: Auto and time
+If you click the extensions icon in the top left; then SenecDone: a menu will come up with 1 option: Auto
 - Auto does everything automatically, you just need to be on the right page - be careful, it can start doing tasks u don't want it to do
-- time does nothing yet ignore it

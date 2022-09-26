@@ -20,7 +20,7 @@ function onMessage(message, sender, sendResponse)
 	}
 }
 chrome.runtime.onInstalled.addListener(() => {
-	chrome.storage.sync.set({time:0, auto:false})
+	chrome.storage.sync.set({auto:false})
 })
 
 chrome.runtime.onMessage.addListener(onMessage)
