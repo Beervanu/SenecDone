@@ -6,9 +6,8 @@ Turn on Developer mode (top right)
 Click Load Unpacked and open the folder in this directory called "src"
 
 Edge
-Go to edge://extensions/
-Turn on Developer mode (left sidebar)
-Click Load Unpacked and open the folder in this directory called "src"
+https://microsoftedge.microsoft.com/addons/detail/senecdone/anbjfblpnecgflpliipmjmfihgnmnooh
+Install the extension at this link; you can delete this zip
 
 Opera
 Drag the file called SenecDone.crx into opera from the file explorer
