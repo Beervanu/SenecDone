@@ -7,7 +7,6 @@ let __senecUtilities = {
 		nativeInputValueSetter.call(input, text);
 		const event = new Event('input', {target: input, bubbles: true });
 		input.dispatchEvent(event);
-		
 	},
 	eventHandler: (node) =>
 	{
