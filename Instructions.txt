@@ -3,7 +3,7 @@ How To Install
 Chrome
 Go to chrome://extensions/
 Turn on Developer mode (top right)
-Click Load Unpacked and open the folder in this directory called "src"
+Click Load Unpacked and open the folder in this directory called "src-chrome"
 
 Edge
 https://microsoftedge.microsoft.com/addons/detail/senecdone/anbjfblpnecgflpliipmjmfihgnmnooh

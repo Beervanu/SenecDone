@@ -1,4 +1,3 @@
-
 (() => {
 let ended = false
 let __senecUtilities = {
@@ -6,8 +5,22 @@ let __senecUtilities = {
 	{
 		const nativeInputValueSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, 'value').set;
 		nativeInputValueSetter.call(input, text);
-		const event = new Event('input', { bubbles: true });
+		const event = new Event('input', {target: input, bubbles: true });
 		input.dispatchEvent(event);
+
+		// let lastValue = input.value
+		// input.value = text
+		// let tracker = input._valueTracker
+		
+		// if (tracker) {
+		// 	tracker.setValue(text);
+		// }
+
+
+		// let InputElement = input.ownerDocument.defaultView?.HTMLInputElement || window.HTMLInputElement
+		// let prop= Object.getOwnPropertyDescriptor(InputElement.prototype, 'value')
+		// prop.set.call(input, text)
+		
 	},
 	eventHandler: (node) =>
 	{
@@ -25,6 +38,7 @@ let __senecFunctions = {
 		__senecUtilities.inputText(node, __senecUtilities.internalInstance(node.parentNode).child.memoizedProps.inputPart.value.toJSON().value)
 		continueButton.click()
 	},
+
 	carousel: (node, continueButton) =>
 	{
 		continueButton.click()
@@ -35,7 +49,10 @@ let __senecFunctions = {
 		let props = __senecUtilities.internalInstance(node).child.memoizedProps
 		if(props.children|| props.inputRef)
 		{
-			__senecUtilities.inputText(node.querySelector('.Input_input__3CI_c'), props.value)
+			let input = node.querySelector('.Input_input__3CI_c')
+			let inputChangeObserver = new MutationObserver(() => __senecUtilities.inputText(input, props.value))
+			inputChangeObserver.observe(input, {attributes:true})
+			__senecUtilities.inputText(input, props.value)
 		}
 	},
 
@@ -156,16 +173,16 @@ let __senecFunctions = {
 	{
 		node = node.parentNode
 		node.childNodes[__senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).key].click()
-	}
+	},
+
+	multiStep: (node) =>
+	{
+		console.log("mutlistep")
+		console.log(node.innerHTML, node.querySelector('.MissingWordInput_wrapper__2DM_a'))
+		let tempObserver = new MutationObserver(search.bind({}, true))
+		tempObserver.observe(node, {childList: true})
+	}	
 }
-
-
-__senecFunctions.multiStep = (node) =>
-{
-	let tempObserver = new MutationObserver(search.bind({}, true))
-	tempObserver.observe(node, {childList: true})
-}
-
 
 
 let __senecActionNodes = {
@@ -308,8 +325,8 @@ function search(multiStep, mutRecords)
 	if (!node) return false
 	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
 	if(scrollUp) scrollUp.click()
-
-	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4')).pop()
+	console.log(mutRecords, node)
+	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
 	if (continueButton && continueButton.innerText === 'Next')
 	{
 		let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -320,8 +337,6 @@ function search(multiStep, mutRecords)
 			}
 		})
 		obv.observe(continueButton, {attributeFilter: ['disabled']})
-		
-		return false
 	}
 
 	let nodeIsFound = false
@@ -330,6 +345,7 @@ function search(multiStep, mutRecords)
 		let foundNodes = Array.from(node.getElementsByClassName(nodeName))
 		for(let i = 0; i<foundNodes.length; i++)
 		{
+			console.log(foundNodes, multiStep)
 			nodeIsFound = true
 			if(__senecActionNodes[nodeName].waitForReady && !multiStep)
 			{
@@ -373,7 +389,7 @@ let endObserver = new MutationObserver((mutRecords, mutObserver) => {
 	{
 		ended = true
 		end.querySelector('.jZlLyf').click()
-		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).pop().click()
+		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).find(btn => btn.outerText==="Start new session").click()
 	}
 })
 endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})

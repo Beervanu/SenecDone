@@ -1,0 +1,4 @@
+update .crx file
+give button the button pointer
+one task at a time functionality
+SenecDone button disappear once start learning is manually clicked
