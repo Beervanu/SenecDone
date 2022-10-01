@@ -7,19 +7,6 @@ let __senecUtilities = {
 		nativeInputValueSetter.call(input, text);
 		const event = new Event('input', {target: input, bubbles: true });
 		input.dispatchEvent(event);
-
-		// let lastValue = input.value
-		// input.value = text
-		// let tracker = input._valueTracker
-		
-		// if (tracker) {
-		// 	tracker.setValue(text);
-		// }
-
-
-		// let InputElement = input.ownerDocument.defaultView?.HTMLInputElement || window.HTMLInputElement
-		// let prop= Object.getOwnPropertyDescriptor(InputElement.prototype, 'value')
-		// prop.set.call(input, text)
 		
 	},
 	eventHandler: (node) =>
