@@ -6,19 +6,16 @@ chrome.storage.sync.onChanged.addListener((changes) => Object.assign(config, cha
 //doesn't work yet
 function __run()
 {
-	let randTime = config.time*1000*60 + (Math.random()*120-60)
+	let randMillisec = Math.floor((config.time + Math.random()-.5)*60*1000)
 
 	
-	document.querySelector(body).style.setProperty('opacity', 0.5)
-	timerID = setInterval(()=> {}, 1000)
-	document.querySelector('#session_startNewSession').click()
+	root.style.setProperty('opacity', 0.5)
 	config.time ? setTimeout(() => 
 	{
+		root.style.setProperty('opacity', 1)
 		chrome.runtime.sendMessage({action: "runSenecDone"})
-		clearInterval(timerID)
-		document.querySelector(body).style.setProperty('opacity', 1)
-	}, randTime) : chrome.runtime.sendMessage({action: "runSenecDone"})
-	return randTime
+	}, randMillisec) : chrome.runtime.sendMessage({action: "runSenecDone"})
+	return randMillisec
 }
 
 function run()
@@ -28,7 +25,8 @@ function run()
 
 let helpObserver = new MutationObserver((mutRecords, observer) => {
 	// when uri has changed and we are on a start new session page
-	if(document.querySelector('#session_startNewSession') && oldURI !== root.baseURI)
+	let sessionButton = document.querySelector('#session_startNewSession')
+	if(sessionButton && oldURI !== root.baseURI)
 	{
 		oldURI = root.baseURI
 		if (config.auto)
@@ -45,6 +43,7 @@ let helpObserver = new MutationObserver((mutRecords, observer) => {
 				s.remove()
 			}
 			document.querySelector('.SessionControlBar_wrapper__2XLzu').after(s)
+			sessionButton.addEventListener('click', () => s.remove())
 		}
 	}
 })

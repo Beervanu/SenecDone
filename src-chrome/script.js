@@ -20,6 +20,11 @@ let __senecUtilities = {
 
 
 let __senecFunctions = {
+	cont: (node, continueButton) =>
+	{
+		continueButton.click()
+	},
+
 	numberInput: (node, continueButton) => {
 		__senecUtilities.inputText(node, __senecUtilities.internalInstance(node.parentNode).child.memoizedProps.inputPart.value.toJSON().value)
 		continueButton.click()
@@ -85,11 +90,6 @@ let __senecFunctions = {
 				toggleNodes[i].click()
 			}		
 		}
-	},
-
-	cont: (node, continueButton) =>
-	{
-		continueButton.click()
 	},
 
 	list: (node) =>
@@ -311,7 +311,6 @@ function search(multiStep, mutRecords)
 	if (!node) return false
 	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
 	if(scrollUp) scrollUp.click()
-	console.log(mutRecords, node)
 	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
 	if (continueButton && continueButton.innerText === 'Next')
 	{

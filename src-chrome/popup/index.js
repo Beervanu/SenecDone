@@ -1,7 +1,5 @@
 let autoButton = document.getElementById('auto')
-let save = document.getElementById('save')
-
-save.addEventListener('click', () => {
+autoButton.addEventListener('click', () => {
 	chrome.storage.sync.set({
 		auto: autoButton.checked
 	})
