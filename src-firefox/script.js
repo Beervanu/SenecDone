@@ -307,8 +307,16 @@ function search(multiStep, mutRecords)
 	if (!node) return false
 	node = multiStep ? node.parentNode : node
 	if (!node) return false
-	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
-	if(scrollUp) scrollUp.click()
+	let scrolledUp = document.querySelector('.ScrolledUpControlBar__wrapper')
+	if(scrolledUp) scrolledUp.click()
+	let obv = new MutationObserver((mutRecords, mutObserver) => {
+		if(!continueButton.getAttribute('disabled'))
+		{
+			continueButton.click()
+			mutObserver.disconnect()
+		}
+	})
+
 	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
 	if (continueButton && continueButton.innerText === 'Next')
 	{
@@ -329,7 +337,7 @@ function search(multiStep, mutRecords)
 		for(let i = 0; i<foundNodes.length; i++)
 		{
 			nodeIsFound = true
-			if(__senecActionNodes[nodeName].waitForReady && !multiStep)
+			if((__senecActionNodes[nodeName].waitForReady && !multiStep) || scrolledUp)
 			{
 				// only execute function when the page is ready
 				let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -361,7 +369,7 @@ function search(multiStep, mutRecords)
 	}
 	return nodeIsFound
 }
-let searchObserver = new MutationObserver(search.bind({}, false))
+let searchObserver = new MutationObserver((mut)=>)
 searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true})
 
 // end observer waits for the end of the session, and redirects us to the new one
@@ -373,6 +381,7 @@ let endObserver = new MutationObserver((mutRecords, mutObserver) => {
 		end.querySelector('.jZlLyf').click()
 		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).find(btn => btn.outerText==="Start new session").click()
 	}
+	let scroll
 })
 endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
 

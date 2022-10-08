@@ -1,4 +1,6 @@
 *.pem
 *.pdn
 *.zip
-TODO
+node_modules
+package-lock.json
+package.json

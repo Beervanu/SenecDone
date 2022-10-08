@@ -1,0 +1,35 @@
+{
+    "name": "SenecDone",
+	"description": "Never have to do homework again, SenecDone will do seneca assignments at the click of a button", 
+    "version": "0.6.1",
+    "manifest_version": 2,
+    "background": {
+        "scripts": ["./background.js"]
+    },
+	"permissions": ["scripting", "storage", "https://app.senecalearning.com/classroom/course/*/section/*/session"],
+    "browser_action": {
+        "default_title": "Options",
+		"default_popup": "popup/index.html",
+		"default_icon": {
+			"16": "Icons/16.png",
+			"32": "Icons/32.png",
+			"48": "Icons/48.png",
+			"128": "Icons/128.png"
+		}
+    },
+	
+	"web_accessible_resources": ["script.js"],
+	"content_scripts": [
+		{
+			"matches": ["https://app.senecalearning.com/*"],
+			"css": ["help_button.css"],
+			"js": ["help_button.js"]
+		}
+	],
+	"browser_specific_settings": {
+		"gecko": {
+		  "id": "senecdone@senecdone.com",
+		  "strict_min_version": "42.0"
+		}
+	  }	  
+}
