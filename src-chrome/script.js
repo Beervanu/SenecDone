@@ -1,4 +1,15 @@
 (() => {
+
+function searchTimeout()
+{
+	let nl = document.querySelector('.SessionScrollView__wrapper').querySelectorAll('.gPTATj')
+	search(nl[nl.length-1], true)
+}
+
+let searchTimer = setTimeout(searchTimeout,3000)
+
+
+
 let ended = false
 let __senecUtilities = {
 	inputText: (input, text) =>
@@ -159,26 +170,12 @@ let __senecFunctions = {
 	{
 		node = node.parentNode
 		node.childNodes[__senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).key].click()
-	},
-
-	multiStep: (node) =>
-	{
-		let tempObserver = new MutationObserver(search.bind({}, true))
-		tempObserver.observe(node, {childList: true})
-	}	
+	}
 }
 
 
 let __senecActionNodes = {
-	'Steps_steps__2fyon': {
-		func: "multiStep"
-	},
-	'PretestWrapper__outer': {
-		func: "multiStep"
-	},
-	'WrongWord': {
-		func: "multiStep"
-	},
+
 	'WrongWord__selectableSentenceWrapper': {
 		func: 'wrongWord'
 	},
@@ -223,6 +220,9 @@ let __senecActionNodes = {
 	'Toggles__wrapper': {
 		func: "toggle"
 	},
+	'Toggles__container': {
+		func: "toggle"
+	},
 
 	'MessageStructure__outer': {
 		func: "cont"
@@ -232,6 +232,10 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 	'Video__wrapper': {
+		func: "cont",
+		waitForReady: true
+	},
+	'Video__container': {
 		func: "cont",
 		waitForReady: true
 	},
@@ -263,6 +267,10 @@ let __senecActionNodes = {
 		func: "cont",
 		waitForReady: true
 	},
+	'Pattern__container': {
+		func: "cont",
+		waitForReady: true
+	},
 
 	'List__wrapper': {
 		func: "list",
@@ -278,7 +286,16 @@ let __senecActionNodes = {
 		func: "list",
 		waitForReady: true
 	},
+
+	'ImageList__container': {
+		func: "list",
+		waitForReady: true
+	},
 	'Mindmap__wrapper': {
+		func: "list",
+		waitForReady: true
+	},
+	'Mindmap__container': {
 		func: "list",
 		waitForReady: true
 	},
@@ -303,6 +320,10 @@ let __senecActionNodes = {
 		func: "flow",
 		waitForReady: true
 	},
+	'Flow__container': {
+		func: "flow",
+		waitForReady: true
+	},
 
 	'EquationColorMatchButton_container__20P5p': {
 		func: "colourMatch"
@@ -320,14 +341,17 @@ function processSearch(mutRecords)
 {
 	for(let m in mutRecords)
 	{
-		mutRecords[m].addedNodes.forEach(node => {search(false, node)})
+		mutRecords[m].addedNodes.forEach(node => {search(node)})
 	}
 }
 
-function search(multiStep, node)
+function search(node, fromTimeout)
 {
-	if (!node) return false
-	node = multiStep ? node.parentNode : node
+	clearTimeout(searchTimer)
+	searchTimer = setTimeout(searchTimeout, 3000)
+
+	// if (!node) return false
+	// node = multiStep ? node.parentNode : node
 	if (!node) return false
 	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
 	if(scrollUp) scrollUp.click()
@@ -351,7 +375,7 @@ function search(multiStep, node)
 		for(let i = 0; i<foundNodes.length; i++)
 		{
 			nodeIsFound = true
-			if(__senecActionNodes[nodeName].waitForReady && !multiStep)
+			if(__senecActionNodes[nodeName].waitForReady && !fromTimeout)//!multiStep && 
 			{
 				// only execute function when the page is ready
 				let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -374,7 +398,7 @@ function search(multiStep, node)
 	{
 		// only search until a node that we know is found
 		let emptyObv = new MutationObserver((mutRecords) => {
-			if(search(false, mutRecords))
+			if(search(mutRecords))
 			{
 				emptyObv.disconnect()
 			}
@@ -401,3 +425,18 @@ endObserver.observe(document.getElementById('root'), {childList: true, subtree: 
 //start learning button
 document.querySelector('#session_startNewSession').click()
 })()
+
+	// 'Steps_steps__2fyon': {
+	// 	func: "multiStep"
+	// },
+	// // 'PretestWrapper__outer': {
+	// // 	func: "multiStep"
+	// // },
+	// 'WrongWord': {
+	// 	func: "multiStep"
+	// },
+		// multiStep: (node) =>
+	// {
+	// 	let tempObserver = new MutationObserver(search.bind({}, true))
+	// 	tempObserver.observe(node, {childList: true})
+	// }	
