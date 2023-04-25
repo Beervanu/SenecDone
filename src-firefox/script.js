@@ -301,23 +301,33 @@ let __senecActionNodes = {
 //returns true if a node is found
 //false in all other cases
 
-function search(multiStep, mutRecords)
+function search(multiStep, node)
 {
-	let node = mutRecords[0].addedNodes[0]
 	if (!node) return false
+
+	//if we are in a multistep node, use the parent node, in order to see all nodes
 	node = multiStep ? node.parentNode : node
 	if (!node) return false
-	let scrolledUp = document.querySelector('.ScrolledUpControlBar__wrapper')
-	if(scrolledUp) scrolledUp.click()
-	let obv = new MutationObserver((mutRecords, mutObserver) => {
-		if(!continueButton.getAttribute('disabled'))
-		{
-			continueButton.click()
-			mutObserver.disconnect()
-		}
-	})
 
-	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
+	let controlBar = document.querySelector('.SessionLayout_footer__38rN6')
+	let scrolledUp = controlBar.querySelector('.ScrolledUpControlBar__wrapper')
+	if(scrolledUp)
+	{
+		// only on firefox, for some reason the scroll lags the page or smthn
+		let scrollObserver = new MutationObserver((mutRecords, mutObserver) => {
+			if(controlBar.querySelectorAll('.Button_button__1Q4K4'))
+			{
+				search(multiStep, record)
+			}
+		})
+		scrollObserver.observe(controlBar, {childList:true, subtree:true})
+		scrolledUp.click()
+	}
+	
+	
+	
+
+	let continueButton = controlBar.querySelectorAll('.Button_button__1Q4K4')
 	if (continueButton && continueButton.innerText === 'Next')
 	{
 		let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -337,7 +347,7 @@ function search(multiStep, mutRecords)
 		for(let i = 0; i<foundNodes.length; i++)
 		{
 			nodeIsFound = true
-			if((__senecActionNodes[nodeName].waitForReady && !multiStep) || scrolledUp)
+			if(__senecActionNodes[nodeName].waitForReady && !multiStep)
 			{
 				// only execute function when the page is ready
 				let obv = new MutationObserver((mutRecords, mutObserver) => {
@@ -369,7 +379,10 @@ function search(multiStep, mutRecords)
 	}
 	return nodeIsFound
 }
-let searchObserver = new MutationObserver((mut)=>)
+let searchObserver = new MutationObserver((mutRecords)=>{
+	// ok i know it looks bad but it just funnels all the addednodes from the weird mutation record object into the search function
+	mutRecords.filter(rec=>!!rec.addedNodes).flatMap(rec=>Array.from(rec.addedNodes)).forEach(addedNode=>search(false, addedNode))
+})
 searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true})
 
 // end observer waits for the end of the session, and redirects us to the new one
