@@ -1,7 +1,7 @@
 {
     "name": "SenecDone",
 	"description": "Never have to do homework again, SenecDone will do seneca assignments at the click of a button", 
-    "version": "0.6.1",
+    "version": "0.6.2",
     "manifest_version": 3,
     "background": {
         "service_worker": "./background.js"

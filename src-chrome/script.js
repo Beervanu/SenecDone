@@ -10,7 +10,7 @@ let __senecUtilities = {
 	},
 	eventHandler: (node) =>
 	{
-		return node[Object.keys(node).find(key=>key.startsWith('__reactEventHandlers'))]
+		return node[Object.keys(node).find(key=>key.startsWith('__reactEventHandler'))]
 	},
 	internalInstance: (node) =>
 	{
@@ -98,7 +98,7 @@ let __senecFunctions = {
 		let inputNode = node.querySelector('input')
 		for(let i = 0; i<wordNodes.length; i++)
 		{
-			__senecUtilities.inputText(inputNode, wordNodes[i].textContent)
+			__senecUtilities.inputText(inputNode, __senecUtilities.internalInstance(wordNodes[i]).return.memoizedProps.word)
 		}
 	},
 
@@ -193,6 +193,11 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 
+	'MissingWordInput_container__3SL0g': {
+		func: "missingWord",
+		waitForReady: true
+	},
+
 	'MissingWordInput_wrapper__2DM_a': {
 		func: "missingWord",
 		waitForReady: true
@@ -263,6 +268,12 @@ let __senecActionNodes = {
 		func: "list",
 		waitForReady: true
 	},
+
+	'List__container': {
+		func: "list",
+		waitForReady: true
+	},
+
 	'ImageList__wrapper': {
 		func: "list",
 		waitForReady: true
@@ -277,6 +288,10 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 
+	'ExactList_container__ztD0m': {
+		func: "exactList",
+		waitForReady: true
+	},
 	'Flashcard__card': {
 		func: "flashcard"
 	},
@@ -301,9 +316,16 @@ let __senecActionNodes = {
 //returns true if a node is found
 //false in all other cases
 
-function search(multiStep, mutRecords)
+function processSearch(mutRecords)
 {
-	let node = mutRecords[0].addedNodes[0]
+	for(let m in mutRecords)
+	{
+		mutRecords[m].addedNodes.forEach(node => {search(false, node)})
+	}
+}
+
+function search(multiStep, node)
+{
 	if (!node) return false
 	node = multiStep ? node.parentNode : node
 	if (!node) return false
@@ -361,8 +383,8 @@ function search(multiStep, mutRecords)
 	}
 	return nodeIsFound
 }
-let searchObserver = new MutationObserver(search.bind({}, false))
-searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true})
+let searchObserver = new MutationObserver(processSearch.bind({}))
+searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true, subtree:true})
 
 // end observer waits for the end of the session, and redirects us to the new one
 let endObserver = new MutationObserver((mutRecords, mutObserver) => {
