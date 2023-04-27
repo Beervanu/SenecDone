@@ -1,16 +1,34 @@
 (() => {
-
+let ended = false
+let searchTimer = setTimeout(searchTimeout,300)
 function searchTimeout()
 {
-	let nl = document.querySelector('.SessionScrollView__wrapper').querySelectorAll('.gPTATj')
-	search(nl[nl.length-1], true)
+	clearTimeout(searchTimer)
+	searchTimer = setTimeout(searchTimeout, 1000)
+	let nl = document.querySelector('.SessionScrollView__wrapper').querySelectorAll('.SessionItemEntranceTransitionWrapper')//.SessionItemFocusWrapper_wrapper__2rhF8 
+	let end1 = document.querySelector('.EndSessionModalRouter_wrapper__3hwdx')
+	let end2 = document.querySelector('.SessionControlBar_wrapper__2XLzu')
+	let anim = document.querySelector('.TopicScoreAnimation_wrapper__2vFyL')
+	if(anim)
+	{
+		ended=true
+	}
+	if(end1)
+	{
+		end1.querySelectorAll('button')[0].click()
+		ended=true
+	}
+	if(end2.childElementCount && ended)
+	{
+		end2.querySelectorAll('button')[1].click()
+	}
+	if(!ended)
+	{
+		search(nl[nl.length-1], true)
+	}
 }
 
-let searchTimer = setTimeout(searchTimeout,3000)
 
-
-
-let ended = false
 let __senecUtilities = {
 	inputText: (input, text) =>
 	{
@@ -26,6 +44,14 @@ let __senecUtilities = {
 	internalInstance: (node) =>
 	{
 		return node[Object.keys(node).find(key=>key.startsWith('__reactInternalInstance'))]
+	},
+	props: (node) =>
+	{
+		return node[Object.keys(node).find(key=>key.startsWith('__reactProps'))]
+	},
+	fiber: (node) =>
+	{
+		return node[Object.keys(node).find(key=>key.startsWith('__reactFiber'))]
 	}
 }
 
@@ -37,7 +63,7 @@ let __senecFunctions = {
 	},
 
 	numberInput: (node, continueButton) => {
-		__senecUtilities.inputText(node, __senecUtilities.internalInstance(node.parentNode).child.memoizedProps.inputPart.value.toJSON().value)
+		__senecUtilities.inputText(node, __senecUtilities.fiber(node.parentNode).child.memoizedProps.inputPart.value.toJSON().value)
 		continueButton.click()
 	},
 
@@ -48,7 +74,7 @@ let __senecFunctions = {
 
 	missingWord: (node) =>
 	{
-		let props = __senecUtilities.internalInstance(node).child.memoizedProps
+		let props = __senecUtilities.fiber(node).child.memoizedProps
 		if(props.children|| props.inputRef)
 		{
 			let input = node.querySelector('.Input_input__3CI_c')
@@ -59,7 +85,7 @@ let __senecFunctions = {
 	},
 
 	wrongWord: (node) => {
-		let sentence = __senecUtilities.internalInstance(node).memoizedProps.children.props.sentence
+		let sentence = __senecUtilities.fiber(node).memoizedProps.children.props.sentence
 
 		for(let i = 0; i<sentence.length; i++)
 		{
@@ -75,7 +101,7 @@ let __senecFunctions = {
 		let a = Array.from(node.querySelectorAll('button'))
 		for(let i = 0; i<a.length; i++)
 		{
-			if (__senecUtilities.internalInstance(a[i].parentNode).child.memoizedProps.correct)
+			if (__senecUtilities.fiber(a[i].parentNode).child.memoizedProps.correct)
 			{
 				a[i].click()
 			}
@@ -85,14 +111,13 @@ let __senecFunctions = {
 
 	imageMultipleChoice: (node) => 
 	{
-		
-		let key = __senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).key
-		Array.from(node.querySelectorAll('img')).find((el) => __senecUtilities.eventHandler(el).src === key).click()
+		let key = __senecUtilities.fiber(node).memoizedProps.children.find((el) => el.props.correct).key
+		Array.from(node.querySelectorAll('img')).find((el) => __senecUtilities.fiber(el).src === key).click()
 	},
 
 	toggle: (node) =>
 	{
-		let options = __senecUtilities.eventHandler(node).children[1].props.children
+		let options = __senecUtilities.props(node).children[1].props.children
 		let toggleNodes = Array.from(node.querySelectorAll('.Toggles__single__toggle'))
 		for(let i = 0; i<options.length; i++)
 		{
@@ -109,14 +134,14 @@ let __senecFunctions = {
 		let inputNode = node.querySelector('input')
 		for(let i = 0; i<wordNodes.length; i++)
 		{
-			__senecUtilities.inputText(inputNode, __senecUtilities.internalInstance(wordNodes[i]).return.memoizedProps.word)
+			__senecUtilities.inputText(inputNode, __senecUtilities.fiber(wordNodes[i]).return.memoizedProps.word)
 		}
 	},
 
 	exactList: (node) =>
 	{
 		node = node.parentNode
-		let values = __senecUtilities.internalInstance(node).child.memoizedProps.content.values
+		let values = __senecUtilities.fiber(node).child.memoizedProps.content.values
 		let inputNode = node.querySelector('input')
 		for(let i = 0; i<values.length; i++)
 		{
@@ -139,7 +164,7 @@ let __senecFunctions = {
 	flow: (node, continueButton) =>
 	{
 		node = node.parentNode
-		let orderedValues = __senecUtilities.internalInstance(node).memoizedProps.children[1].props.content.orderedValues
+		let orderedValues = __senecUtilities.fiber(node).memoizedProps.children.props.content.orderedValues
 
 		for(let i = 0; i<orderedValues.length; i++)
 		{
@@ -169,7 +194,7 @@ let __senecFunctions = {
 	colourMatch: (node) => 
 	{
 		node = node.parentNode
-		node.childNodes[__senecUtilities.internalInstance(node).memoizedProps.children.find((el) => el.props.correct).key].click()
+		node.childNodes[__senecUtilities.fiber(node).memoizedProps.children.find((el) => el.props.correct).key].click()
 	}
 }
 
@@ -347,8 +372,6 @@ function processSearch(mutRecords)
 
 function search(node, fromTimeout)
 {
-	clearTimeout(searchTimer)
-	searchTimer = setTimeout(searchTimeout, 3000)
 
 	// if (!node) return false
 	// node = multiStep ? node.parentNode : node
@@ -394,33 +417,22 @@ function search(node, fromTimeout)
 		}
 	
 	}
-	if(!nodeIsFound)
-	{
-		// only search until a node that we know is found
-		let emptyObv = new MutationObserver((mutRecords) => {
-			if(search(mutRecords))
-			{
-				emptyObv.disconnect()
-			}
-		})
-		emptyObv.observe(node, {childList: true, subtree:true})
-	}
 	return nodeIsFound
 }
 let searchObserver = new MutationObserver(processSearch.bind({}))
 searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true, subtree:true})
 
 // end observer waits for the end of the session, and redirects us to the new one
-let endObserver = new MutationObserver((mutRecords, mutObserver) => {
-	let end = document.querySelector('.EndSessionModalRouter_wrapper__3hwdx')
-	if(end && !ended)
-	{
-		ended = true
-		end.querySelector('.jZlLyf').click()
-		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).find(btn => btn.outerText==="Start new session").click()
-	}
-})
-endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
+// let endObserver = new MutationObserver((mutRecords, mutObserver) => {
+// 	let end = document.querySelector('.EndSessionModalRouter_wrapper__3hwdx')
+// 	if(end && !ended)
+// 	{
+// 		ended = true
+// 		end.querySelectorAll('a')[1].click()
+// 		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).find(btn => btn.outerText==="Start new session").click()
+// 	}
+// })
+// endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
 
 //start learning button
 document.querySelector('#session_startNewSession').click()
