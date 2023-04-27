@@ -170,7 +170,7 @@ let __senecFunctions = {
 		{
 
 			let listValues = Array.from(node.querySelectorAll('.ListValue__value'))
-			let nodeAtI = listValues.find(node => node.innerText === orderedValues[i].trim())
+			let nodeAtI = listValues.find(node => __senecUtilities.props(node).children.props.markdown === orderedValues[i].trim())
 
 			let {left, top} = nodeAtI.getBoundingClientRect()
 			let {top: correctTop} = listValues[i].getBoundingClientRect()
@@ -345,14 +345,14 @@ let __senecActionNodes = {
 		func: "hyperFlashcard"
 	},
 
-	'Flow__wrapper': {
-		func: "flow",
-		waitForReady: true
-	},
-	'Flow__container': {
-		func: "flow",
-		waitForReady: true
-	},
+	// 'Flow__wrapper': {
+	// 	func: "flow",
+	// 	waitForReady: true
+	// },
+	// 'Flow__container': {
+	// 	func: "flow",
+	// 	waitForReady: true
+	// },
 
 	'EquationColorMatchButton_container__20P5p': {
 		func: "colourMatch"
@@ -382,7 +382,8 @@ function search(node, fromTimeout)
 	if (!node) return false
 	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
 	if(scrollUp) scrollUp.click()
-	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))[0]
+	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))
+	continueButton = continueButton[continueButton.length-1]
 	if (continueButton && continueButton.innerText === 'Next')
 	{
 		let obv = new MutationObserver((mutRecords, mutObserver) => {
