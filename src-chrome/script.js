@@ -228,6 +228,10 @@ let __senecActionNodes = {
 		func: "missingWord",
 		waitForReady: true
 	},
+	'EquationInputWithManagedFocus_container__1RFq6': {
+		func: "missingWord",
+		waitForReady: true
+	},
 
 	'MultipleChoiceCardContents_contents__2YA0v': {
 		func: "multipleChoice"
