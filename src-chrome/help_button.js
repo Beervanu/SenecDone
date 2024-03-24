@@ -26,9 +26,11 @@ function run()
 let helpObserver = new MutationObserver((mutRecords, observer) => {
 	// when uri has changed and we are on a start new session page
 	let sessionButton = document.querySelector('#session_startNewSession')
+	if (!sessionButton) sessionButton = document.querySelector('.sc-iBYQkv')
 	if(sessionButton && oldURI !== root.baseURI)
 	{
 		oldURI = root.baseURI
+		if(oldURI.includes("end-session")) return
 		if (config.auto)
 		{
 			run()
@@ -42,7 +44,9 @@ let helpObserver = new MutationObserver((mutRecords, observer) => {
 				run()
 				s.remove()
 			}
-			document.querySelector('.SessionControlBar_wrapper__2XLzu').after(s)
+			insertAfter = document.querySelector('.SessionControlBar_wrapper__bPDBU')
+			if (!insertAfter) insertAfter = document.querySelector('.SessionScrollView__wrapper')
+			insertAfter.after(s)
 			sessionButton.addEventListener('click', () => s.remove())
 		}
 	}

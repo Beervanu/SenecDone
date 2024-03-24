@@ -1,30 +1,31 @@
 (() => {
 let ended = false
 let searchTimer = setTimeout(searchTimeout,300)
+
 function searchTimeout()
 {
 	clearTimeout(searchTimer)
 	searchTimer = setTimeout(searchTimeout, 1000)
 	let nl = document.querySelector('.SessionScrollView__wrapper').querySelectorAll('.SessionItemEntranceTransitionWrapper')//.SessionItemFocusWrapper_wrapper__2rhF8 
-	let end1 = document.querySelector('.EndSessionModalRouter_wrapper__3hwdx')
-	let end2 = document.querySelector('.SessionControlBar_wrapper__2XLzu')
-	let anim = document.querySelector('.TopicScoreAnimation_wrapper__2vFyL')
-	if(anim)
+	let root = document.querySelector('#root')
+	if(root.baseURI.includes("end-session"))
 	{
-		ended=true
+		ended = true
+		let endScreenContent = document.querySelector('.hEZfbO')
+		if(endScreenContent)
+		{
+			endScreenContent.querySelector('a')?.click()
+			endScreenContent.parentElement.querySelector('.cASbJs')?.click()
+		}		
 	}
-	if(end1)
-	{
-		end1.querySelectorAll('button')[0].click()
-		ended=true
-	}
-	if(end2.childElementCount && ended)
-	{
-		end2.querySelectorAll('button')[1].click()
-	}
+	
 	if(!ended)
 	{
 		search(nl[nl.length-1], true)
+	}
+	else
+	{
+		document.querySelector('.SessionControlBar_wrapper__bPDBU').querySelector('a')?.click()
 	}
 }
 
@@ -77,7 +78,7 @@ let __senecFunctions = {
 		let props = __senecUtilities.fiber(node).child.memoizedProps
 		if(props.children|| props.inputRef)
 		{
-			let input = node.querySelector('.Input_input__3CI_c')
+			let input = node.querySelector('.Input_input__TSvFd')
 			let inputChangeObserver = new MutationObserver(() => __senecUtilities.inputText(input, props.value))
 			inputChangeObserver.observe(input, {attributes:true})
 			__senecUtilities.inputText(input, props.value)
@@ -130,11 +131,30 @@ let __senecFunctions = {
 
 	list: (node) =>
 	{
-		let wordNodes = Array.from(node.querySelectorAll('.BlurredWord__word--blurred'))
+		let wordNodes = Array.from(node.querySelectorAll('.BlurredWord__word--hidden'))
 		let inputNode = node.querySelector('input')
 		for(let i = 0; i<wordNodes.length; i++)
 		{
 			__senecUtilities.inputText(inputNode, __senecUtilities.fiber(wordNodes[i]).return.memoizedProps.word)
+		}
+	},
+
+	mindMap: (node) =>
+	{
+		let wordNodes = __senecUtilities.fiber(node).pendingProps.children[0].props.children[0].props.children
+		let inputNode = node.querySelector('input')
+		for(let i = 0; i<wordNodes.length; i++)
+		{
+			if (wordNodes[i].props.testing)
+			{
+				let values = wordNodes[i].props.value.value
+				for(let j = 0; j<values; j++)
+				{
+					if(value[j]?.word) __senecUtilities.inputText(inputNode, value[j].word)
+				}
+				
+			}
+			
 		}
 	},
 
@@ -210,12 +230,12 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 
-	'DesktopConcept_carousel__pw-xA': {
+	'DesktopConcept_carousel__h572H': {
 		func: "carousel",
 		waitForReady: true
 	},
 
-	'MissingWordInput_container__3SL0g': {
+	'MissingWordInput_container__sopKj': {
 		func: "missingWord",
 		waitForReady: true
 	},
@@ -228,7 +248,7 @@ let __senecActionNodes = {
 		func: "missingWord",
 		waitForReady: true
 	},
-	'EquationInputWithManagedFocus_container__1RFq6': {
+	'EquationInputWithManagedFocus_container__NpHPN': {
 		func: "missingWord",
 		waitForReady: true
 	},
@@ -242,7 +262,7 @@ let __senecActionNodes = {
 	'MultiSelectCardContents_contents__cNf9H': {
 		func: "multipleChoice"
 	},
-	'MultipleChoiceQuestion_answerAndImageContainer__1v5KG': {
+	'MultipleChoiceQuestion_answerAndImageContainer__Yrxix': {
 		func: "multipleChoice"
 	},
 
@@ -256,7 +276,7 @@ let __senecActionNodes = {
 	'MessageStructure__outer': {
 		func: "cont"
 	},
-	'ImageDescription_container__2Hwrn': {
+	'ImageDescription_container__KioEt': {
 		func: "cont",
 		waitForReady: true
 	},
@@ -284,7 +304,7 @@ let __senecActionNodes = {
 		func: "cont",
 		waitForReady: true
 	},
-	'ImageVideo_image__18quk Image_image__3spJM': {
+	'ImageVideo_video__Lrju- Image_image__TrOf4': {
 		func: "cont",
 		waitForReady: true
 	},
@@ -325,7 +345,7 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 	'Mindmap__container': {
-		func: "list",
+		func: "mindMap",
 		waitForReady: true
 	},
 	
@@ -334,7 +354,7 @@ let __senecActionNodes = {
 		waitForReady: true
 	},
 
-	'ExactList_container__ztD0m': {
+	'ExactList_container__Xo5mU': {
 		func: "exactList",
 		waitForReady: true
 	},
@@ -370,44 +390,39 @@ function processSearch(mutRecords)
 {
 	for(let m in mutRecords)
 	{
-		mutRecords[m].addedNodes.forEach(node => {search(node)})
+		searched = Array.from(mutRecords[m].addedNodes).map(search)
+	}
+	if(searched.every((res)=> !res))
+	{
+		__senecFunctions.cont(document.querySelector('.SessionControlBar_wrapper__bPDBU').querySelector('button'))
 	}
 }
 
 function search(node, fromTimeout)
 {
-
-	// if (!node) return false
-	// node = multiStep ? node.parentNode : node
 	if (!node) return false
 	let scrollUp = document.querySelector('.ScrolledUpControlBar__wrapper')
 	if(scrollUp) scrollUp.click()
-	let continueButton = Array.from(document.querySelectorAll('.Button_button__1Q4K4'))
-	continueButton = continueButton[continueButton.length-1]
-	if (continueButton && continueButton.innerText === 'Next')
-	{
-		let obv = new MutationObserver((mutRecords, mutObserver) => {
-			if(!continueButton.getAttribute('disabled'))
-			{
-				continueButton.click()
-				mutObserver.disconnect()
-			}
-		})
-		obv.observe(continueButton, {attributeFilter: ['disabled']})
-	}
-
+	let continueButton = document.querySelector('.SessionControlBar_wrapper__bPDBU')?.querySelector('button')
 	let nodeIsFound = false
 	for(let nodeName in __senecActionNodes)
 	{
 		let foundNodes = Array.from(node.getElementsByClassName(nodeName))
 		for(let i = 0; i<foundNodes.length; i++)
 		{
+			console.log(foundNodes[i])
 			nodeIsFound = true
 			if(__senecActionNodes[nodeName].waitForReady && !fromTimeout)//!multiStep && 
 			{
+				// console.log("started waiting", foundNodes, continueButton)
+				if(!continueButton.disabled)
+				{
+					__senecFunctions[__senecActionNodes[nodeName].func](foundNodes[i], continueButton)
+					continue
+				}
 				// only execute function when the page is ready
 				let obv = new MutationObserver((mutRecords, mutObserver) => {
-					if(!continueButton.getAttribute('disabled'))
+					if(!continueButton.disabled)
 					{
 						__senecFunctions[__senecActionNodes[nodeName].func](foundNodes[i], continueButton)
 						mutObserver.disconnect()
@@ -419,13 +434,14 @@ function search(node, fromTimeout)
 			{
 				__senecFunctions[__senecActionNodes[nodeName].func](foundNodes[i], continueButton)
 			}
+			
 		}
 	
 	}
 	return nodeIsFound
 }
 let searchObserver = new MutationObserver(processSearch.bind({}))
-searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true, subtree:true})
+searchObserver.observe(document.querySelector('.SessionScrollView__wrapper')?.childNodes[0], {childList: true, subtree:true})
 
 // end observer waits for the end of the session, and redirects us to the new one
 // let endObserver = new MutationObserver((mutRecords, mutObserver) => {
@@ -440,7 +456,21 @@ searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').chi
 // endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
 
 //start learning button
-document.querySelector('#session_startNewSession').click()
+function start()
+{
+	let startButton = document.querySelector('#session_startNewSession')
+	if (startButton)
+	{
+		startButton.click()
+	}
+	else 
+	{
+		document.querySelector('.sc-iBYQkv').click()
+	}
+}
+setTimeout(start, 1000)
+
+
 })()
 
 	// 'Steps_steps__2fyon': {

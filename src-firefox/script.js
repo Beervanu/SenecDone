@@ -383,7 +383,7 @@ let searchObserver = new MutationObserver((mutRecords)=>{
 	// ok i know it looks bad but it just funnels all the addednodes from the weird mutation record object into the search function
 	mutRecords.filter(rec=>!!rec.addedNodes).flatMap(rec=>Array.from(rec.addedNodes)).forEach(addedNode=>search(false, addedNode))
 })
-searchObserver.observe(document.querySelector('.SessionScrollView__wrapper').childNodes[0], {childList: true})
+searchObserver.observe(document.querySelector('.SessionScrollView__wrapper')?.childNodes[0], {childList: true})
 
 // end observer waits for the end of the session, and redirects us to the new one
 let endObserver = new MutationObserver((mutRecords, mutObserver) => {
@@ -394,7 +394,6 @@ let endObserver = new MutationObserver((mutRecords, mutObserver) => {
 		end.querySelector('.jZlLyf').click()
 		Array.from(document.querySelectorAll('.Button_content__1Q0Uw')).find(btn => btn.outerText==="Start new session").click()
 	}
-	let scroll
 })
 endObserver.observe(document.getElementById('root'), {childList: true, subtree: true})
 
