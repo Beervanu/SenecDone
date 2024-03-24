@@ -256,7 +256,7 @@ let __senecActionNodes = {
 	'MultipleChoiceCardContents_contents__2YA0v': {
 		func: "multipleChoice"
 	},
-	'EquationMultipleChoice_container__8tld4': {
+	'EquationMultipleChoice_container__cKTbG': {
 		func: "multipleChoice"
 	},
 	'MultiSelectCardContents_contents__cNf9H': {
@@ -300,15 +300,15 @@ let __senecActionNodes = {
 		func: "cont",
 		waitForReady: true
 	},
-	'TextBlock_content__g-0N6': {
+	'TextBlock_content__qQ0Hp': {
 		func: "cont",
 		waitForReady: true
 	},
-	'ImageVideo_video__Lrju- Image_image__TrOf4': {
+	'Image_image__TrOf4': {
 		func: "cont",
 		waitForReady: true
 	},
-	'Question_question__25RlY': {
+	'Question_question__8iwsH': {
 		func: "cont",
 		waitForReady: true
 	},
@@ -394,7 +394,7 @@ function processSearch(mutRecords)
 	}
 	if(searched.every((res)=> !res))
 	{
-		__senecFunctions.cont(document.querySelector('.SessionControlBar_wrapper__bPDBU').querySelector('button'))
+		__senecFunctions.cont(null, document.querySelector('.SessionControlBar_wrapper__bPDBU').querySelector('button'))
 	}
 }
 

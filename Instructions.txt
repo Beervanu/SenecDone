@@ -5,7 +5,7 @@ Go to chrome://extensions/
 Turn on Developer mode (top right)
 Click Load Unpacked and open the folder in this directory called "src-chrome"
 
-Edge
+Edge (most likely to be out of date)
 https://microsoftedge.microsoft.com/addons/detail/senecdone/anbjfblpnecgflpliipmjmfihgnmnooh
 Install the extension at this link; you can delete this zip
 
@@ -16,4 +16,4 @@ Click Install
 
 Use
 If you click the extensions icon in the top left; then SenecDone: a menu will come up with 1 option: Auto
-- Auto does everything automatically, you just need to be on the right page - be careful, it can start doing tasks u don't want it to do
+- Auto does everything automatically, you just need to be on the right page - be careful, it can start doing tasks you don't want it to do
